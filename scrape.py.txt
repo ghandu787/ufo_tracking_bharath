@@ -1,0 +1,14 @@
+def scrape_details(url):
+    details_response = requests.get(url)
+    details_soup = BeautifulSoup(details_response.text, "html.parser")
+    details_table = details_soup.find_all("table")[-1]
+    details_rows = details_table.find_all("tr")
+
+    details_data = []
+    for row in details_rows[1:]:  # skip the header rows
+        cols = row.find_all("td")
+        date = datetime.strptime(cols[0].text, "%m/%d/%y %H:%M")
+        city = cols[1].text
+        summary = cols[6].text
+        details_data.append([date, city, summary])
+    return details_data
